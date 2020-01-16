@@ -33,7 +33,7 @@ c1 = models("c1", nside) # cmb: lensed CMB realisation computed using Taylens
 A_dust_BB=5.0
 EB_dust=2.  # ratio between B and E modes from Planck IX 2018, B_to_E = 0.5, i.e. E_to_B=2
 alpha_dust_EE=-0.42 # spectral tilt from Planck IX 2018, alpha = -0.42
-alpha_dust_BB=-0.2
+alpha_dust_BB=-0.42
 nu0_dust=353. #corresponds to nu_0_P' : 353. # Set as default for d2
 beta_dust = 1.59 # spectral index and temperature from Planck IX 2018, beta = 1.53, T=19.6 K
 temp_dust = 19.6
