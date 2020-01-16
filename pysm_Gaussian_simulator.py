@@ -4,17 +4,12 @@ import healpy as hp
 import numpy as np
 import matplotlib.pyplot as plt
 from noise_calc import Simons_Observatory_V3_SA_noise,Simons_Observatory_V3_SA_beams
-
 import warnings
-
 warnings.simplefilter("ignore")
-
-
 
 #--------------------------------------------------------
 ## Generate components with different templates for spectral indices and amplitudes
 print("Generate maps of components")
-
 
 nside = 512
 
@@ -23,9 +18,7 @@ d2 = models("d2", nside) # dust: modified black body model
 s1 = models("s1", nside) # synchrotron: simple power law with no curved index
 c1 = models("c1", nside) # cmb: lensed CMB realisation computed using Taylens
 
-
 ## Modify models
-
 # Dust
 A_dust_BB=5.0
 EB_dust=2.  # ratio between B and E modes from Planck IX 2018, B_to_E = 0.5
@@ -34,7 +27,6 @@ alpha_dust_BB=-0.42
 nu0_dust=353. #corresponds to nu_0_P' : 353. # Set as default for d2
 beta_dust = 1.59 # spectral index and temperature from Planck IX 2018, beta = 1.53, T=19.6 K
 temp_dust = 19.6
-
 # Sync
 A_sync_BB=2.0
 EB_sync=2.
@@ -51,7 +43,6 @@ def fcmb(nu):
 A_sync_BB = A_sync_BB * fcmb(nu0_sync)**2
 A_dust_BB = A_dust_BB * fcmb(nu0_dust)**2
 
-
 ## Calculate power spectrum
 
 lmax = 3*nside-1
@@ -67,7 +58,6 @@ cl_dust_tt = 0 * cl_dust_bb
 cl_dust_tb = 0 * cl_dust_bb
 cl_dust_eb = 0 * cl_dust_bb
 cl_dust_te = 0 * cl_dust_bb
-
 # Sync
 dl_sync_bb = A_sync_BB * ((ells+0.001) / 80.)**alpha_sync_BB 
 dl_sync_ee = EB_sync * A_sync_BB * ((ells+0.001) / 80.)**alpha_sync_EE
@@ -77,15 +67,13 @@ cl_sync_tt = 0 * cl_sync_bb
 cl_sync_tb = 0 * cl_sync_bb
 cl_sync_eb = 0 * cl_sync_bb
 cl_sync_te = 0 * cl_sync_bb
-
 # CMB
 l,dtt,dee,dbb,dte=np.loadtxt("/mnt/zfsusers/susanna/camb_lens_nobb.dat",unpack=True)
-
 #select first ell from 0 not 1
 l=l.astype(int)
 msk=l<=lmax
 l=l[msk]
-
+#
 dltt=np.zeros(len(ells)); dltt[ells]=dtt[ells]
 dlee=np.zeros(len(ells)); dlee[ells]=dee[ells]
 dlbb=np.zeros(len(ells)); dlbb[ells]=dbb[ells]
@@ -97,19 +85,16 @@ cl_cmb_tb = 0 * cl_cmb_bb
 cl_cmb_eb = 0 * cl_cmb_bb
 cl_cmb_te = 0 * cl_cmb_bb
 
-
 ## Write cls outputs to file 
 prefix_out="/mnt/extraspace/susanna/SO/PySM-test-outputs/sim3_d1s1_outp"
 np.savetxt(prefix_out + "/cls_cmb.txt",np.transpose([ells, cl_cmb_ee, cl_cmb_bb, cl_cmb_tt]))
 np.savetxt(prefix_out + "/cls_sync.txt",np.transpose([ells, cl_sync_ee, cl_sync_bb, cl_sync_tt]))
 np.savetxt(prefix_out + "/cls_dust.txt",np.transpose([ells, cl_dust_ee, cl_dust_bb, cl_dust_tt]))
 
-
 ## Generate amplitude maps with hp.synfast
-
 # Dust
 A_I_dust,A_Q_dust,A_U_dust = hp.synfast([cl_dust_tt, cl_dust_ee, cl_dust_bb, cl_dust_te],
-                                        nside=nside, new=True) #since cl_tt = 0, A_I will be zeros, new=True parameter used to read right order of Cls
+                                        nside=nside, new=True)
 # Sync
 A_I_sync,A_Q_sync,A_U_sync = hp.synfast([cl_sync_tt, cl_sync_ee, cl_sync_bb, cl_sync_te],
                                         nside=nside, new=True)
@@ -117,22 +102,18 @@ A_I_sync,A_Q_sync,A_U_sync = hp.synfast([cl_sync_tt, cl_sync_ee, cl_sync_bb, cl_
 A_I_cmb,A_Q_cmb,A_U_cmb = hp.synfast([cl_cmb_tt, cl_cmb_ee, cl_cmb_bb, cl_cmb_te],
                                      nside=nside, new=True)
 
-
 ## Set the newly defined attributes in models
-
 # Dust
 d2[0]['A_I'] = A_I_dust
 d2[0]['A_Q'] = A_Q_dust
 d2[0]['A_U'] = A_U_dust
 d2[0]['spectral_index'] = beta_dust
 d2[0]['temp'] = temp_dust * np.ones(d2[0]['temp'].size) #need array, no const value for temp with PySM
-
 # Sync
 s1[0]['A_I'] = A_I_sync
 s1[0]['A_Q'] = A_Q_sync
 s1[0]['A_U'] = A_U_sync
 s1[0]['spectral_index'] = beta_sync
-
 # cmb
 c1[0]['A_I'] = A_I_cmb
 c1[0]['A_Q'] = A_Q_cmb
@@ -154,11 +135,8 @@ dust = sky.dust(nu)
 sync = sky.synchrotron(nu)
 cmb = sky.cmb(nu)
 
-
-
 #--------------------------------------------------------
 print("Adding instrumental effects")
-
 
 freqs_LF1, bpass_LF1 = np.loadtxt("/mnt/zfsusers/susanna/PySM-tests2/BBPipe/examples/data/LF/LF1.txt",unpack=True) 
 N_freqs_LF1 = len(freqs_LF1)
@@ -218,20 +196,13 @@ npix= hp.nside2npix(nside)
 ## Write full sky  map
 hp.write_map(prefix_out+"/sky_sign_inst.fits", sky_maps.reshape([nfreqs*2,npix]) , overwrite=True) 
 
-
-'''
-# Generate mask
-'''
+#--------------------------------------------------------
 print("Generating mask")
 
 npix= hp.nside2npix(nside) 
-
 nhits=hp.ud_grade(hp.read_map("norm_nHits_SA_35FOV.fits",  verbose=False),nside_out=nside)
-
 nhits/=np.amax(nhits) 
-
 fsky=np.mean(nhits) 
-
 
 #--------------------------------------------------------
 print("Generating noise maps and splits")
@@ -276,7 +247,6 @@ for s in range(nsplits):
 
 for f in range(nfreqs):
     np.savetxt(prefix_out + "/cls_noise_b%d.txt" % (f+1),np.transpose([ells,nell[f]]))
-
 
 ## Write splits list
 f=open(prefix_out+"/splits_list.txt","w")
