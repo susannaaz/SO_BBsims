@@ -44,7 +44,6 @@ A_sync_BB = A_sync_BB * fcmb(nu0_sync)**2
 A_dust_BB = A_dust_BB * fcmb(nu0_dust)**2
 
 ## Calculate power spectrum
-
 lmax = 3*nside-1
 ells = np.arange(lmax+1)
 dlfac=2*np.pi/(ells*(ells+1.)); dlfac[0]=1
@@ -58,6 +57,7 @@ cl_dust_tt = 0 * cl_dust_bb
 cl_dust_tb = 0 * cl_dust_bb
 cl_dust_eb = 0 * cl_dust_bb
 cl_dust_te = 0 * cl_dust_bb
+
 # Sync
 dl_sync_bb = A_sync_BB * ((ells+0.001) / 80.)**alpha_sync_BB 
 dl_sync_ee = EB_sync * A_sync_BB * ((ells+0.001) / 80.)**alpha_sync_EE
@@ -67,9 +67,10 @@ cl_sync_tt = 0 * cl_sync_bb
 cl_sync_tb = 0 * cl_sync_bb
 cl_sync_eb = 0 * cl_sync_bb
 cl_sync_te = 0 * cl_sync_bb
+
 # CMB
 l,dtt,dee,dbb,dte=np.loadtxt("/mnt/zfsusers/susanna/camb_lens_nobb.dat",unpack=True)
-#select first ell from 0 not 1
+# select first ell from 0 not 1
 l=l.astype(int)
 msk=l<=lmax
 l=l[msk]
@@ -118,7 +119,6 @@ s1[0]['spectral_index'] = beta_sync
 c1[0]['A_I'] = A_I_cmb
 c1[0]['A_Q'] = A_Q_cmb
 c1[0]['A_U'] = A_U_cmb
-
 
 ## Define configuration dictionaries for each component
 sky_config = {
