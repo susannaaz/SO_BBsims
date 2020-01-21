@@ -47,7 +47,6 @@ A_beta = A_beta * fcmb(nu0_sync)**2
 #(Gaussian, power law: C_{\ell} = A \cdot (\frac{\ell+0.001}{80.})^\alpha $) 
 cl_betaSync= A_beta * ((ells+0.001) / 80.)**gamma_beta #
 
-
 # Map from given power spectrum as mean + gaussian random field
 #---------------------------------------------------
 
