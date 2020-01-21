@@ -4,6 +4,7 @@ import healpy as hp
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 # Map parameters
 #---------------------------------------------------
 nside = 512 #int(len(ells)/3)
