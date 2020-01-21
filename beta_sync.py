@@ -1,10 +1,8 @@
 import pysm
 from pysm.nominal import models
-
 import healpy as hp
 import numpy as np
 import matplotlib.pyplot as plt
-
 
 # Map parameters
 #---------------------------------------------------
@@ -12,8 +10,7 @@ nside = 512 #int(len(ells)/3)
 lmax = 3*nside-1
 ells = np.arange(lmax+1)
 
-
-# Power law model: Parameters
+# Power law model
 #---------------------------------------------------
 
 # Gamma must be less than -2 for convergence in 0x2 term
