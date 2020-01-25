@@ -17,7 +17,8 @@ ells = np.arange(lmax+1)
 gamma_beta_sync = -2.5
 gamma_beta_dust = -3.5
 
-# Calculate power spectrum (input)                                             #---------------------------------------------------                           
+# Calculate power spectrum (input)
+#---------------------------------------------------                           
 def powerlaw(ells, gamma):
     c_ells = ((ells+0.001) / 80.)**gamma
     return c_ells
