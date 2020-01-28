@@ -20,6 +20,8 @@ c1 = models("c1", nside) # cmb: lensed CMB realisation computed using Taylens
 
 ## Modify models
 
+prefix_in='/mnt/zfsusers/susanna/PySM-tests2/BBPipe/examples/template_PySM/'
+
 # Dust
 A_dust_BB=5.0
 EB_dust=2.  # ratio between B and E modes from Planck IX 2018, B_to_E = 0.5
@@ -27,10 +29,10 @@ alpha_dust_EE=-0.42 # spectral tilt from Planck IX 2018, alpha = -0.42
 alpha_dust_BB=-0.42
 nu0_dust=353. #corresponds to nu_0_P' : 353. # Set as default for d2
 beta_dust = 1.59 # spectral index and temperature from Planck IX 2018, beta = 1.53, T=19.6 K
-#beta_dust = read_map(template('beta_mean1p59_std0p2.fits'), nside, field=0, pixel_indices=pixel_indices, mpi_comm=mpi_comm) #Varying w/ PySM model
+#beta_dust = read_map(template('beta_mean1p59_std0p2.fits'), nside, field=0, pixel_indices=pixel_indices, mpi_comm=mpi_comm) #Varying with PySM template
+beta_dust =  hp.ud_grade(hp.read_map(prefix_in+'map_beta_dust.fits', verbose=False), nside_out=nside)  #Varying with new map_beta_dust
 temp_dust = 19.6
 
-prefix_in='/mnt/zfsusers/susanna/PySM-tests2/BBPipe/examples/template_PySM/'
 # Sync
 A_sync_BB=2.0
 EB_sync=2.
@@ -38,9 +40,9 @@ alpha_sync_EE=-0.6
 alpha_sync_BB=-0.4
 nu0_sync=23. #nu_0_P # Set as default
 beta_sync=-3. # spectral index 
-#beta_sync=-3. # spectral index #Const                                                                                   
-#beta_sync = hp.ud_grade(hp.read_map('synch_beta.fits', verbose=False,  field=[0]), nside_out=nside)  #Varying with PySM map           #beta_sync = hp.ud_grade(hp.read_map(prefix_in+'map_beta_sync.fits', verbose=False), nside_out=nside)  #Varying with new map_beta_sync
-beta_sync = hp.ud_grade(hp.read_map(prefix_in+'map_beta_sync_fin.fits', verbose=False), nside_out=nside)  #Varying with new map_beta_sync_fin
+#beta_sync=-3. # spectral index #Const
+#beta_sync = hp.ud_grade(hp.read_map('synch_beta.fits', verbose=False,  field=[0]), nside_out=nside)  #Varying with PySM map                                     
+beta_sync = hp.ud_grade(hp.read_map(prefix_in+'map_beta_sync.fits', verbose=False), nside_out=nside)  #Varying with new map_beta_sync
 
 def fcmb(nu):
     x=0.017608676067552197*nu
