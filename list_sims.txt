@@ -1,4 +1,3 @@
-/mnt/extraspace/susanna/SO/PySM-test-outputs/sim4_betaSyncVar_outp
 /mnt/extraspace/susanna/SO/PySM-test-outputs/sim_constBeta_seed1000
 /mnt/extraspace/susanna/SO/PySM-test-outputs/sim_constBeta_seed1001
 /mnt/extraspace/susanna/SO/PySM-test-outputs/sim_constBeta_seed1002

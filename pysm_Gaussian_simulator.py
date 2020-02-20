@@ -4,8 +4,21 @@ import healpy as hp
 import numpy as np
 import matplotlib.pyplot as plt
 from noise_calc import Simons_Observatory_V3_SA_noise,Simons_Observatory_V3_SA_beams
+import sys
+import os
 import warnings
 warnings.simplefilter("ignore")
+
+#--------------------------------------------------------
+# Run many simulations with different seeds
+if len(sys.argv) != 2:
+    print("Usage: pysm_componentspip2_temp.py seed")
+    exit(1)
+seed = int(sys.argv[1])
+np.random.seed(seed)
+
+dirname = "/mnt/extraspace/susanna/SO/PySM-test-500sims/sim_constBeta_seed%d"%(seed)
+os.system('mkdir '+dirname)
 
 #--------------------------------------------------------
 ## Generate components with different templates for spectral indices and amplitudes
@@ -28,7 +41,8 @@ EB_dust=2.  # ratio between B and E modes from Planck IX 2018, B_to_E = 0.5
 alpha_dust_EE=-0.42 # spectral tilt from Planck IX 2018, alpha = -0.42
 alpha_dust_BB=-0.42
 nu0_dust=353. #corresponds to nu_0_P' : 353. # Set as default for d2
-beta_dust = 1.59 # spectral index and temperature from Planck IX 2018, beta = 1.53, T=19.6 K
+# Choose wether beta_dust is constant or varying
+#beta_dust = 1.59 # const spectral index and temperature from Planck IX 2018, beta = 1.53, T=19.6 K
 #beta_dust = read_map(template('beta_mean1p59_std0p2.fits'), nside, field=0, pixel_indices=pixel_indices, mpi_comm=mpi_comm) #Varying with PySM template
 beta_dust =  hp.ud_grade(hp.read_map(prefix_in+'map_beta_dust.fits', verbose=False), nside_out=nside)  #Varying with new map_beta_dust
 temp_dust = 19.6
@@ -39,7 +53,7 @@ EB_sync=2.
 alpha_sync_EE=-0.6
 alpha_sync_BB=-0.4
 nu0_sync=23. #nu_0_P # Set as default
-beta_sync=-3. # spectral index 
+# Choose wether beta_sync is constant or varying
 #beta_sync=-3. # spectral index #Const
 #beta_sync = hp.ud_grade(hp.read_map('synch_beta.fits', verbose=False,  field=[0]), nside_out=nside)  #Varying with PySM map                                     
 beta_sync = hp.ud_grade(hp.read_map(prefix_in+'map_beta_sync.fits', verbose=False), nside_out=nside)  #Varying with new map_beta_sync
@@ -96,7 +110,7 @@ cl_cmb_eb = 0 * cl_cmb_bb
 cl_cmb_te = 0 * cl_cmb_bb
 
 ## Write cls outputs to file 
-prefix_out="/mnt/extraspace/susanna/SO/PySM-test-outputs/sim3_d1s1_outp"
+prefix_out=dirname
 np.savetxt(prefix_out + "/cls_cmb.txt",np.transpose([ells, cl_cmb_ee, cl_cmb_bb, cl_cmb_tt]))
 np.savetxt(prefix_out + "/cls_sync.txt",np.transpose([ells, cl_sync_ee, cl_sync_bb, cl_sync_tt]))
 np.savetxt(prefix_out + "/cls_dust.txt",np.transpose([ells, cl_dust_ee, cl_dust_bb, cl_dust_tt]))
@@ -125,6 +139,7 @@ s1[0]['A_Q'] = A_Q_sync
 s1[0]['A_U'] = A_U_sync
 s1[0]['spectral_index'] = beta_sync
 # cmb
+c1[0]['model'] = 'pre_computed' #Ensure that output maps at different seeds is different
 c1[0]['A_I'] = A_I_cmb
 c1[0]['A_Q'] = A_Q_cmb
 c1[0]['A_U'] = A_U_cmb
@@ -138,11 +153,6 @@ sky_config = {
 ## Initialise Sky 
 sky = pysm.Sky(sky_config)
 
-## Components for array of frequencies
-nu = np.array([27., 39., 93., 145., 225., 280.]) 
-dust = sky.dust(nu)
-sync = sky.synchrotron(nu)
-cmb = sky.cmb(nu)
 
 #--------------------------------------------------------
 print("Adding instrumental effects")
